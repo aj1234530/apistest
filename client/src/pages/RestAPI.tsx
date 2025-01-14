@@ -8,13 +8,11 @@ export interface ResponseTypes {
   timeTaken: string;
   responseSize: string;
 }
+
 function RestAPI() {
-  const [apiResponse, setApiResponse] = useState<null | ResponseTypes>({
-    status: "300",
-    responseSize: "30",
-    timeTaken: "30",
-    responseBody: "hello",
-  });
+  //data that user enters in auth
+  const [bodyData, setBodyData] = useState<string | null>(null);
+  const [apiResponse, setApiResponse] = useState<null | ResponseTypes>(null);
   const [activeComponent, setActiveComponent] = useState<
     "JSON" | "Raw" | "Headers"
   >("Raw");

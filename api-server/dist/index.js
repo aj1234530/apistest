@@ -18,20 +18,27 @@ app.get("/ping", (req, res) => {
 app.post("/:method/:url", (req, res) => {
     const startTime = Date.now();
     const { url, method } = req.params; //add types to the method
-    console.log(method);
-    const { data } = req.body;
+    const { bodyData, authorizationData } = req.body;
+    const parsedBodyData = JSON.parse(bodyData); //will be sent to via axios
     try {
         (0, axios_1.default)({
             method: method,
             url: url,
-            data: method === "GET" ? null : data,
+            data: method === "GET" ? null : parsedBodyData,
+            headers: {
+                "content-type": "application/json",
+                "X-RapidAPI-Key": "your-rapidapi-key",
+                "X-RapidAPI-Host": "microsoft-translator-text.p.rapidapi.com",
+                Authorization: `Bearer ${authorizationData} sdfls`,
+            },
         })
             .then(function (response) {
-            console.log("response data", response.data);
-            console.log("response status", response.status);
-            console.log("response text", response.statusText);
-            console.log("response headers", response.headers);
-            console.log("response config", response.config);
+            //these are metadata of response received
+            // console.log("response data", response.data);
+            // console.log("response status", response.status);
+            // console.log("response text", response.statusText);
+            // console.log("response headers", response.headers);
+            // console.log("response config", response.config);
             res.status(200).json({
                 message: "Third party api is in range of 2xx",
                 responseForTesters: {
@@ -77,7 +84,7 @@ app.post("/:method/:url", (req, res) => {
                     .status(500)
                     .json({ messag: "Our server is Not responding retry" });
             }
-            console.log("code is here 4", error.config);
+            console.log("code is here 5 error", error.config);
         });
     }
     catch (error) {

@@ -1,4 +1,14 @@
-function BodyComponent() {
+function BodyComponent({
+  bodyData,
+  setBodyData,
+}: {
+  bodyData: null | string;
+  setBodyData: React.Dispatch<React.SetStateAction<string | null>>;
+}) {
+  // let jsonData;
+  // if(bodyData)
+  //   jsonData = JSON.parse(bodyData)
+
   return (
     <div>
       <div className="headingandselect flex flex row gap-3 text-sm">
@@ -14,9 +24,12 @@ function BodyComponent() {
         {/* we can use json.parse to check if correct format is enter - it successfykt parses if json else error */}
         <textarea
           text-sm
-          placeholder="Raw Request Body"
+          className="p-2"
+          placeholder="enter in json format"
           rows={8}
           cols={50}
+          defaultValue={bodyData || ""}
+          onChange={(e) => setBodyData(e.target.value.replace(/\n/g, ""))}
         ></textarea>
       </div>
     </div>

@@ -1,23 +1,30 @@
 import { useState } from "react";
-import ParametersComponent from "./apisfields/Parameters";
-import BodyComponent from "./apisfields/Body";
-import AuthorizationComponent from "./apisfields/Authorization";
-import HeadersComponent from "./apisfields/Headers";
+import ParametersComponent from "./requestTabs/Parameters";
+import BodyComponent from "./requestTabs/Body";
+import AuthorizationComponent from "./requestTabs/Authorization";
+import HeadersComponent from "./requestTabs/Headers";
 import axios from "axios";
 import { ResponseTypes } from "../pages/RestAPI";
 export interface Parameters {
   key: string;
   value: string;
-  description: string;
+  description: string | null;
 }
+type AuthType = "none" | "bearer" | "basicAuth" | "apiKey" | "awsSignature";
 interface RequestComponentProps {
   apiResponse: ResponseTypes | null;
   setApiResponse: React.Dispatch<React.SetStateAction<ResponseTypes | null>>;
 }
 function Request({ apiResponse, setApiResponse }: RequestComponentProps) {
   const [method, setMethod] = useState<string>("GET");
+  const [authorizationData, setAuthorizationData] = useState<null | string>(
+    null
+  ); //data that user enters in auth
+  const [bodyData, setBodyData] = useState<string | null>(null); //data that user enters in body as json(only json will be impl)
   const [api, setApi] = useState<null | string>(null);
   const [parameters, setParameters] = useState<Parameters[] | null>(null);
+  const [authSelectionValue, setAuthSelectionValue] =
+    useState<AuthType>("none"); //for setting type of auth select
 
   //only four string values
   const [activeComponent, setActiveComponent] = useState<
@@ -26,11 +33,29 @@ function Request({ apiResponse, setApiResponse }: RequestComponentProps) {
 
   const hanldeApiTesting = async () => {
     try {
-      console.log(api, method); //log
+      console.log(
+        api,
+        method,
+        "body:",
+        bodyData,
+        "authorization",
+        authorizationData,
+        parameters
+      ); //log
+      if (bodyData) {
+        //if not json string it throws syntax error - so catching the error in the catch
+        JSON.parse(bodyData);
+      }
+
       if (api && method) {
         console.log(api);
+        console.log(bodyData);
         const response = await axios.post(
-          `http://localhost:3002/${method}/${encodeURIComponent(api)}`
+          `http://localhost:3002/${method}/${encodeURIComponent(api)}`,
+          {
+            bodyData: bodyData,
+            authorizationData: authorizationData,
+          }
         );
         console.log(response);
         setApiResponse((prev) => ({
@@ -47,6 +72,7 @@ function Request({ apiResponse, setApiResponse }: RequestComponentProps) {
         alert("check your inputs");
       }
     } catch (error) {
+      alert(`invalid json format ${error}`);
       console.log(error);
     }
   };
@@ -115,8 +141,17 @@ function Request({ apiResponse, setApiResponse }: RequestComponentProps) {
       <div className="p-2">
         {/* asked gpt how to render four component in single space one by one */}
         {activeComponent === "Parameters" && <ParametersComponent />}
-        {activeComponent === "Body" && <BodyComponent />}
-        {activeComponent === "Authorization" && <AuthorizationComponent />}
+        {activeComponent === "Body" && (
+          <BodyComponent bodyData={bodyData} setBodyData={setBodyData} />
+        )}
+        {activeComponent === "Authorization" && (
+          <AuthorizationComponent
+            authSelectionValue={authSelectionValue}
+            setAuthSelectionValue={setAuthSelectionValue}
+            authorizationData={authorizationData}
+            setAuthorizationData={setAuthorizationData}
+          />
+        )}
         {activeComponent === "Headers" && <HeadersComponent />}
       </div>
     </div>
