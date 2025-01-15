@@ -1,48 +1,48 @@
-/frontend//logs
-/frontend/*.log
-/frontend/npm-debug.log*
-/frontend/yarn-debug.log*
-/frontend/yarn-error.log*
-/frontend/pnpm-debug.log*
-/frontend/lerna-debug.log*
+/client//logs
+/client/*.log
+/client/npm-debug.log*
+/client/yarn-debug.log*
+/client/yarn-error.log*
+/client/pnpm-debug.log*
+/client/lerna-debug.log*
 
-/frontend/node_modules
-/frontend/dist
+/client/node_modules
+/client/dist
 /frontdist-ssr
-/frontend/*.local
+/client/*.local
 
-# /frontend/Editor directories and files
-/frontend/.vscode/*
-/frontend/!.vscode/extensions.json
-/frontend/.idea
-/frontend/.DS_Store
-/frontend/*.suo
-/frontend/*.ntvs*
-/frontend/*.njsproj
-/frontend/*.sln
-/frontend/*.sw?
+# /client/Editor directories and files
+/client/.vscode/*
+/client/!.vscode/extensions.json
+/client/.idea
+/client/.DS_Store
+/client/*.suo
+/client/*.ntvs*
+/client/*.njsproj
+/client/*.sln
+/client/*.sw?
 
 
-/backend/logs
-/backend/*.log
-/backend/npm-debug.log*
-/backend/yarn-debug.log*
-/backend/yarn-error.log*
-/backend/pnpm-debug.log*
-/backend/lerna-debug.log*
+/api-server/logs
+/api-server/*.log
+/api-server/npm-debug.log*
+/api-server/yarn-debug.log*
+/api-server/yarn-error.log*
+/api-server/pnpm-debug.log*
+/api-server/lerna-debug.log*
 
-/backend/node_modules
-/backend/dist
-/backend/dist-ssr
-/backend/*.local
+/api-server/node_modules
+/api-server/dist
+/api-server/dist-ssr
+/api-server/*.local
 
-# /backend/Editor directories and files
-/backend/.vscode/*
-/backend/!.vscode/extensions.json
-/backend/.idea
-/backend/.DS_Store
-/backend/*.suo
-/backend/*.ntvs*
-/backend/*.njsproj
-/backend/*.sln
-/backend/*.sw?
+# /api-server/Editor directories and files
+/api-server/.vscode/*
+/api-server/!.vscode/extensions.json
+/api-server/.idea
+/api-server/.DS_Store
+/api-server/*.suo
+/api-server/*.ntvs*
+/api-server/*.njsproj
+/api-server/*.sln
+/api-server/*.sw?
