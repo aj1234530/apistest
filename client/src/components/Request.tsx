@@ -51,7 +51,9 @@ function Request({ apiResponse, setApiResponse }: RequestComponentProps) {
         console.log(api);
         console.log(bodyData);
         const response = await axios.post(
-          `http://localhost:3002/${method}/${encodeURIComponent(api)}`,
+          `http://localhost:3002/api/v1/user/request/${method}/${encodeURIComponent(
+            api
+          )}`,
           {
             bodyData: bodyData,
             authorizationData: authorizationData,
@@ -72,7 +74,10 @@ function Request({ apiResponse, setApiResponse }: RequestComponentProps) {
         alert("check your inputs");
       }
     } catch (error) {
-      alert(`invalid json format ${error}`);
+      if (error instanceof SyntaxError) {
+        console.log(error);
+        alert(`invalid json format ${error}`);
+      }
       console.log(error);
     }
   };
@@ -102,13 +107,22 @@ function Request({ apiResponse, setApiResponse }: RequestComponentProps) {
               required
             />
           </div>
-          <button
-            type="button"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            onClick={hanldeApiTesting}
-          >
-            Send
-          </button>
+          <div className="flex flex-row gap-10">
+            <button
+              type="button"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+              onClick={hanldeApiTesting}
+            >
+              Send
+            </button>
+            <button
+              type="button"
+              className="text-black bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-blue-800"
+              
+            >
+              Save
+            </button>
+          </div>
         </div>
       </form>
       <div className="flex flex-row justify-between max-w-[800px] text-sm p-2">
