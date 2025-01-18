@@ -2,7 +2,8 @@ import express, { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-const prisma = new PrismaClient();
+import { authCheck } from "../middlewares/authCheck";
+export const prisma = new PrismaClient();
 export const authRouter = express.Router();
 export const JWT_SECRET = process.env.JWT_SECRET || "secret";
 authRouter.post("/login", async (req: Request, res: Response) => {
@@ -53,5 +54,13 @@ authRouter.post("/signup", async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error " });
+  }
+});
+
+authRouter.post("/verify", authCheck, (req: Request, res: Response) => {
+  try {
+    res.status(200).json({ message: "Ok" });
+  } catch (error) {
+    res.status(500).json({ message: "Not Okay" });
   }
 });

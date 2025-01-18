@@ -12,10 +12,15 @@ export interface Parameters {
 }
 type AuthType = "none" | "bearer" | "basicAuth" | "apiKey" | "awsSignature";
 interface RequestComponentProps {
-  apiResponse: ResponseTypes | null;
+  apiResponse: ResponseTypes | null | string;
   setApiResponse: React.Dispatch<React.SetStateAction<ResponseTypes | null>>;
+  setUpdateUI: React.Dispatch<React.SetStateAction<boolean>>;
 }
-function Request({ apiResponse, setApiResponse }: RequestComponentProps) {
+function Request({
+  apiResponse,
+  setApiResponse,
+  setUpdateUI,
+}: RequestComponentProps) {
   const [method, setMethod] = useState<string>("GET");
   const [authorizationData, setAuthorizationData] = useState<null | string>(
     null
@@ -30,8 +35,36 @@ function Request({ apiResponse, setApiResponse }: RequestComponentProps) {
   const [activeComponent, setActiveComponent] = useState<
     "Headers" | "Parameters" | "Authorization" | "Body"
   >("Parameters");
-
+  const handleRequestSavingToDb = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3002/api/v1/user/save",
+        {
+          method: method,
+          apiEndpoint: api,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            // 'Content-Type': set the value chosen from dropdown
+          },
+        }
+      );
+      if (response.status === 200) {
+        setUpdateUI(true);
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const hanldeApiTesting = async () => {
+    setApiResponse({
+      status: "",
+      responseBody: "fetching response .....  ",
+      timeTaken: "",
+      responseSize: "",
+    });
     try {
       console.log(
         api,
@@ -116,9 +149,9 @@ function Request({ apiResponse, setApiResponse }: RequestComponentProps) {
               Send
             </button>
             <button
+              onClick={handleRequestSavingToDb}
               type="button"
               className="text-black bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-blue-800"
-              
             >
               Save
             </button>

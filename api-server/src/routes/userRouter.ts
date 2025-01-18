@@ -1,9 +1,36 @@
-import express, { Request, Response } from "express";
+import express, { Request, response, Response } from "express";
 import axios from "axios";
+import { prisma } from "./authRouter";
+import { authCheck } from "../middlewares/authCheck";
 export const userRouter = express.Router();
 
-userRouter.post("/save", (req: Request, res: Response) => {
-  const { method, apiEndpoint, body, authorizationToken, authorizationType } = req.body;
+//TODO - handle when the user has that request if clicks again the requesta should be updated not saved again
+userRouter.post("/save", authCheck, async (req: Request, res: Response) => {
+  const {
+    method,
+    apiEndpoint,
+    bodyData,
+    authorizationToken,
+    authorizationType,
+    parameters,
+  } = req.body;
+  const userId = req.userId;
+  try {
+    const url = await prisma.api.create({
+      data: {
+        method: method,
+        apiEndpoint: apiEndpoint,
+        bodyData: bodyData,
+        authorizationToken: authorizationToken,
+        parameters: parameters,
+        userId: userId,
+      },
+    });
+    res.status(200).json({ message: "API saved to db " });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 userRouter.post("/request/:method/:url", (req: Request, res: Response) => {
@@ -45,7 +72,7 @@ userRouter.post("/request/:method/:url", (req: Request, res: Response) => {
           // console.log("code is here 2", error.response.status);
           // console.log("code is here 3", error.response.headers);
           res.status(202).json({
-            message: "Third party api is in range of not in 2xx",
+            message: "Third party api is not in 2xx",
 
             responseForTesters: {
               status: error.response.status,
@@ -59,9 +86,14 @@ userRouter.post("/request/:method/:url", (req: Request, res: Response) => {
           // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
           // http.ClientRequest in node.js
           console.log("4th", error.request);
-          res.status(202).json({
+          res.status(203).json({
             message: "request to third party was made but no response received",
-            responseForTesters: "no response recieved timedout",
+            responseForTesters: {
+              status: 400,
+              response: "no response recieved timedout",
+              timeTaken: Date.now() - startTime,
+              responseSize: 0,
+            },
           });
         } else {
           // Something happened in setting up the request that triggered an Error
@@ -74,5 +106,17 @@ userRouter.post("/request/:method/:url", (req: Request, res: Response) => {
       });
   } catch (error) {
     res.status(500).json({ messag: "Our server is Not responding retry" });
+  }
+});
+
+userRouter.post("/fetchrequests", authCheck, async (req, res) => {
+  try {
+    const requests = await prisma.api.findMany({
+      where: { userId: req.userId },
+    });
+    res.status(200).json({ requests: requests });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });

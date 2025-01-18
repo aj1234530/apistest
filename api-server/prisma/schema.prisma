@@ -22,7 +22,8 @@ model User{
 
 model Api{
   id String @unique @default(cuid())
-  api String
+  apiEndpoint String
+  method String
   bodyData String ?
   authorizationToken String?
   parameters String[] 
